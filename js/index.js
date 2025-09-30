@@ -60,6 +60,11 @@ function createNote(id, content, fixed){
     duplicateIcon.classList.add(...["bi", "bi-file-earmark-plus"])
     element.appendChild(duplicateIcon)
 
+    element.querySelector("textarea").addEventListener("keyup", (e) => {
+        const noteContent = e.target.value
+        updateNote(id, noteContent)
+    })
+
     element.querySelector(".bi-pin").addEventListener("click", () => {
         toggleFixNote(id);
     })
@@ -107,12 +112,18 @@ function copyNote(id){
     const noteElement = createNote(noteObject.id, noteObject.content, noteObject.fixed)
     notesContainer.appendChild(noteElement)
     notes.push(noteObject)
-    saveNotes(note)
+    saveNotes(notes)
 }
 
 //LocalStorage
 function saveNotes(notes){
     localStorage.setItem("notes", JSON.stringify(notes))
+}
+function updateNote(id, newContent){
+    const notes = getNotes()
+    const targetNote = notes.filter((note) => note.id === id)[0]
+    targetNote.content = newContent
+    saveNotes(notes)
 }
 
 function getNotes(){
